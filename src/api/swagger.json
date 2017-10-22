@@ -55,6 +55,32 @@
           }
         }
       }
+    },
+    "/earn/{userId}/{points}": {
+      "x-swagger-router-controller": "points",
+      "get": {
+        "description": "",
+        "operationId": "earnPoints",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "type": "number",
+            "in": "path"
+          },
+          {
+            "name": "points",
+            "required": true,
+            "type": "number",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   }
 }

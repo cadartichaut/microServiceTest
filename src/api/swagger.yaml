@@ -20,3 +20,5 @@ produces:
 paths:
   /hello/{userName}/{age}:
     $ref: './hello/hello.yaml'
+  /earn/{userId}:
+      $ref: './points/points.yaml'
