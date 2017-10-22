@@ -22,27 +22,27 @@ const createSwaggerAsync = promisify(SwaggerExpress.create, SwaggerExpress);
  * @returns {undefined}
  */
 function* _start() {
-  const swaggerExpress = yield createSwaggerAsync({
-    appRoot: './src',
-    swagger: './src/api/swagger.json'
-  });
+    const swaggerExpress = yield createSwaggerAsync({
+        appRoot: './src',
+        swagger: './src/api/swagger.json'
+    });
 
-  mongoose.connect("mongodb://127.0.0.1:27017/db");
-  swaggerExpress.register(app);
+    mongoose.connect("mongodb://127.0.0.1:27017/db");
+    swaggerExpress.register(app);
 
-  yield listenAsync(3000);
+    yield listenAsync(3000);
 }
 
 const start = co.wrap(_start);
 
 if (!module.parent) {
-  start()
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.log(err);
-    process.exit(1);
-  });
+    start()
+        .catch((err) => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+            process.exit(1);
+        });
 } else {
-  module.exports = app;
-  module.exports.start = start;
+    module.exports = app;
+    module.exports.start = start;
 }
