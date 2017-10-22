@@ -1,6 +1,7 @@
 'use strict';
 
 /* eslint-disable require-yield */
+
 let Fidelity = require('../../model/fidelity');
 
 /**
@@ -11,14 +12,21 @@ let Fidelity = require('../../model/fidelity');
  */
 function* earnPoints(req, res) {
     const userId = req.swagger.params.userId.raw;
-    const value = req.swagger.params.points.raw;
+    const value = req.body.price;
+    const isTrip = req.body.isTrip;
 
     Fidelity.findOne({'userId': userId}, function (err, fidelity) {
             if (err) {
                 res.send(err);
             }
+
             if (fidelity) {
-                Object.assign(fidelity, {userId: userId, points: fidelity.points + parseInt(value)}).save((err, fid) => {
+                Object.assign(fidelity, {
+                    userId: userId,
+                    points: fidelity.points + parseInt(value),
+                    isTrip: isTrip ? fidelity.trips + 1 : fidelity.trips})
+
+                .save((err, fid) => {
                     if (err) res.send(err);
                     res.json({message: 'Fidelity updated!', fid});
                 });

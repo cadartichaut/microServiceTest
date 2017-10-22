@@ -56,23 +56,41 @@
         }
       }
     },
-    "/earn/{userId}/{points}": {
-      "x-swagger-router-controller": "points",
-      "get": {
+    "/fidelity/spend/{userId}": {
+      "x-swagger-router-controller": "fidelity",
+      "post": {
         "description": "",
-        "operationId": "earnPoints",
+        "operationId": "fidelitySpend",
         "parameters": [
           {
             "name": "userId",
             "required": true,
             "type": "number",
+            "minimum": 1,
             "in": "path"
           },
           {
-            "name": "points",
+            "in": "body",
+            "name": "body",
+            "description": "Spending object",
             "required": true,
-            "type": "number",
-            "in": "path"
+            "schema": {
+              "required": [
+                "price",
+                "isTrip"
+              ],
+              "properties": {
+                "price": {
+                  "type": "number",
+                  "minimum": 1,
+                  "format": "double",
+                  "example": 2
+                },
+                "isTrip": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -82,16 +100,17 @@
         }
       }
     },
-    "/checkPoints/{userId}}": {
-      "x-swagger-router-controller": "points",
+    "/profile/check/{userId}}": {
+      "x-swagger-router-controller": "fidelity",
       "get": {
         "description": "",
-        "operationId": "checkPoints",
+        "operationId": "checkProfile",
         "parameters": [
           {
             "name": "userId",
             "required": true,
             "type": "number",
+            "minimum": 1,
             "in": "path"
           }
         ],
