@@ -6,7 +6,7 @@ let FidelitySchema = new Schema(
         userId: {type: Number, required: true},
         points: {type: Number, required: true},
         trips: {type: Number, required: true},
-        loyaltyStatus: {type: String, required: true},
+        loyaltyStatus: {type: Number, required: true},
         createdAt: { type: Date, default: Date.now },
     },
     {

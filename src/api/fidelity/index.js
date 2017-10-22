@@ -5,5 +5,5 @@ const controller = require('./fidelity');
 
 module.exports = {
     fidelitySpend: wrap(controller.earnPoints),
-    profileCheck: wrap(controller.checkPoints)
+    checkProfile: wrap(controller.checkProfile)
 };

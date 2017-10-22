@@ -3,7 +3,7 @@
 /* eslint-disable require-yield */
 
 let Fidelity = require('../../model/fidelity');
-
+let loyaltyStatus = require('./loyalityStatus');
 /**
  * Hello
  * @param {Object} req the request
@@ -13,7 +13,7 @@ let Fidelity = require('../../model/fidelity');
 function* earnPoints(req, res) {
     const userId = req.swagger.params.userId.raw;
     const value = req.body.price;
-    const isTrip = req.body.isTrip;
+    const newTripCount = req.body.isTrip ? 1 : 0;
 
     Fidelity.findOne({'userId': userId}, function (err, fidelity) {
             if (err) {
@@ -23,8 +23,9 @@ function* earnPoints(req, res) {
             if (fidelity) {
                 Object.assign(fidelity, {
                     userId: userId,
-                    points: fidelity.points + parseInt(value),
-                    isTrip: isTrip ? fidelity.trips + 1 : fidelity.trips})
+                    points: loyaltyStatus.updatePointsByStatus(fidelity.loyaltyStatus, fidelity.points, parseInt(value)),
+                    trips: fidelity.trips + newTripCount,
+                    loyaltyStatus: loyaltyStatus.updateLoyaltyStatus(fidelity.loyaltyStatus, fidelity.trips + newTripCount)})
 
                 .save((err, fid) => {
                     if (err) res.send(err);
@@ -33,21 +34,25 @@ function* earnPoints(req, res) {
             }
 
             else {
-                let newFidelity = new Fidelity({userId: userId, points: value});
-                newFidelity.save((err, fidelity) => {
+                let newFidelity = new Fidelity({
+                    userId: userId,
+                    points: value,
+                    trips: newTripCount,
+                    loyaltyStatus: loyaltyStatus.getNewLoyaltyStatus()
+                });
+
+                newFidelity.save((err, fid) => {
                     if (err) {
                         res.send(err)
                     }
-                    else {
-                        return res.send({message: `User with id ${userId} earned ${value} points`}, fidelity);
-                    }
+                    res.json({message: 'Fidelity created!', fid});
                 });
             }
         }
     );
 }
 
-function* checkPoints(req, res) {
+function* checkProfile(req, res) {
     const userId = req.swagger.params.userId.raw;
 
     Fidelity.findOne({'userId': userId}, function (err, fidelity) {
@@ -56,10 +61,15 @@ function* checkPoints(req, res) {
         }
 
         if (fidelity)
-            res.json({message: `User with id ${userId} has ${fidelity.points} points`});
+            res.json({
+                userId: fidelity.userId,
+                fidelityPoints : fidelity.points,
+                tripCount: fidelity.trips,
+                remainingTripsUntilNextStatus: loyaltyStatus.getRemainingTripsUntilNext(fidelity.loyaltyStatus, fidelity.trips),
+                currentStatus: loyaltyStatus.getCurrentStatus(fidelity.loyaltyStatus)});
         else
             res.send(`User with id ${userId} doesn't exist`)
     })
 }
 
-module.exports = {earnPoints, checkPoints};
+module.exports = {earnPoints, checkProfile};
