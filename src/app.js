@@ -8,6 +8,7 @@ const SwaggerExpress = require('swagger-express-mw');
 const app = express();
 const server = http.createServer(app);
 const promisify = require('./utils/promisify');
+let mongoose = require('mongoose');
 
 const listenAsync = promisify(server.listen, server);
 const createSwaggerAsync = promisify(SwaggerExpress.create, SwaggerExpress);
@@ -25,6 +26,8 @@ function* _start() {
     appRoot: './src',
     swagger: './src/api/swagger.json'
   });
+
+  mongoose.connect("mongodb://127.0.0.1:27017/db");
   swaggerExpress.register(app);
 
   yield listenAsync(3000);

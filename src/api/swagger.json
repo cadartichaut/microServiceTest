@@ -81,6 +81,27 @@
           }
         }
       }
+    },
+    "/checkPoints/{userId}}": {
+      "x-swagger-router-controller": "points",
+      "get": {
+        "description": "",
+        "operationId": "checkPoints",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "type": "number",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
+
   }
 }
