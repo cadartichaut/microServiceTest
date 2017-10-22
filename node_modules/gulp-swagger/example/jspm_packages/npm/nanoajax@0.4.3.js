@@ -1,0 +1,1 @@
+module.exports = require("npm:nanoajax@0.4.3/index.js");
